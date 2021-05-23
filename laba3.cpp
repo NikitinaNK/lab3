@@ -72,9 +72,36 @@ void svg_rect(double x, double y, double width, double height, string stroke = "
 {
     cout << "<rect x='" << x << "' y='" << y << "' width='" << width << "' height='" << height << "' stroke='" << stroke << "' fill= '" << fill <<"' />";
 }
+
+string enter_color()
+{
+    string color;
+    bool correct = false;
+
+    while (!correct)
+    {
+        cin >> color;
+        bool probels = false;
+
+        for (size_t i = 0; i < color.length(); i++)
+        {
+            if (color[i] == ' ')
+                probels = true;
+        }
+
+        if ((color[0] == '#') || (!probels))
+        {
+            correct = true;
+        }
+        else
+            cout << "Your enter is incorrect, try again";
+    }
+    return color;
+}
 void
 show_histogram_svg(const vector<size_t>& bins) {
     const auto IMAGE_WIDTH = 400;
+    const auto MAX_WIDTH = 350;
     const auto IMAGE_HEIGHT = 300;
     const auto TEXT_LEFT = 20;
     const auto TEXT_BASELINE = 20;
@@ -84,9 +111,24 @@ show_histogram_svg(const vector<size_t>& bins) {
     svg_begin(400, 300);
     svg_text(20, 20, to_string(bins[0]));
     svg_rect(50, 0, bins[0] * 10, 30, "red" );
-    double top = 0;
-    for (size_t bin : bins) {
+    double top = 0; string red = "red"; string black = "black";
+    size_t max_count = 0;
+    for (size_t count : bins) {
+        if (count > max_count) {
+            max_count = count;
+        }
+    }
+    const bool scaling_needed = (max_count * BLOCK_WIDTH) > MAX_WIDTH;
+    string stroke;
+    for (size_t bin : bins)
+    {
         const double bin_width = BLOCK_WIDTH * bin;
+        size_t width = bin_width;
+        if (scaling_needed) {
+            const double scaling_factor = (double)MAX_WIDTH / (max_count * BLOCK_WIDTH);
+            width = (bin_width * scaling_factor);
+        }
+        stroke = enter_color();
         svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
         svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT, "red");
         top += BIN_HEIGHT;
