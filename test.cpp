@@ -1,5 +1,5 @@
 #include "histogram.h"
-
+#include "string"
 #include <cassert>
 
 void
@@ -46,6 +46,31 @@ void empty_array()
     assert(min == 0);
     assert(max == 0);
 }
+
+void gap_error()
+{
+    string str = "str";
+    int gap = 10;
+    if (gap < 2 || gap > 9)
+    {
+        str = "ERROR";
+    }
+    assert(str == "ERROR");
+}
+
+void scalling_test()
+{
+    bool scalling_needed = false;
+    const int BLOCK_WIDTH = 10;
+    const int MAX_WIDTH = 350;
+    int max_count = 20;
+    if ((max_count * BLOCK_WIDTH) > MAX_WIDTH)
+    {
+         scalling_needed = true;
+    }
+    assert(scalling_needed);
+}
+
 int
 main() {
     test_positive();
